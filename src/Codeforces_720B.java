@@ -130,6 +130,12 @@ class Graph {
 public class Codeforces_720B {
 	private static int getFinalNumber(List<int[]> cycles) {
 		HashSet<Integer> colors = new HashSet<>();
+		/*
+		 * cycles - главный массив данных, количество ребер данного цвета
+		 */
+		/*
+		 * Удаляем циклы, в которых по 2+ ребра одного цвета
+		 */
 		Iterator<int[]> itCycles = cycles.iterator();
 		outer: while (itCycles.hasNext()) {
 			int[] arr = itCycles.next();
@@ -145,18 +151,24 @@ public class Codeforces_720B {
 				}
 			}
 		}
-		itCycles = cycles.iterator();
-		outer: while (itCycles.hasNext()) {
-			int[] arr = itCycles.next();
-			for (Integer i : colors) {
-				if (arr[i] > 0) {
-					for (int j = 1; j < arr.length; j++) {
-						if (arr[j] >= 1) {
-							colors.add(j);
+		/*
+		 * удаляем циклы, цвета которых уже есть
+		 */
+		for (int n = 1; n > 0; n = 0) {
+			itCycles = cycles.iterator();
+			outer: while (itCycles.hasNext()) {
+				int[] arr = itCycles.next();
+				for (Integer i : colors) {
+					if (arr[i] > 0) {
+						n++;
+						for (int j = 1; j < arr.length; j++) {
+							if (arr[j] >= 1) {
+								colors.add(j);
+							}
 						}
+						itCycles.remove();
+						continue outer;
 					}
-					itCycles.remove();
-					continue outer;
 				}
 			}
 		}
@@ -181,7 +193,9 @@ public class Codeforces_720B {
 			}
 
 		}
-
+		/*
+		 * Какие цвета в каких циклах.
+		 */
 		HashMap<Integer, List<Integer>> mapColorCycle = new HashMap<>();
 		itCycles = cycles.iterator();
 		for (int i = 0; itCycles.hasNext(); i++) {
@@ -197,22 +211,32 @@ public class Codeforces_720B {
 				}
 			}
 		}
-		LinkedList<MyPair> mapNumberCycle = new LinkedList<>();
-		List<Integer> list;
+		/*
+		 * количество дублирующихся цветов в цикле
+		 */
+		
 		int[] mapCycleNumber = new int[cycles.size()];
-		for (Integer i : mapColorCycle.keySet()){
+		for (Integer i : mapColorCycle.keySet()) {
+			List<Integer> list;
 			list = mapColorCycle.get(i);
-			if(list.size()>1){
-				for (int i : list)
-					mapCycleNumber[i]++;
+			if (list.size() > 1) {
+				for (int j : list)
+					mapCycleNumber[j]++;
 			}
 		}
-		for (int i = 0; i<mapCycleNumber.length; i++){
+		/*
+		 * 
+		 */
+		
+		LinkedList<MyPair> mapNumberCycle = new LinkedList<>();
+		for (int i = 0; i < mapCycleNumber.length; i++) {
 			if (mapCycleNumber[i] > 0)
 				mapNumberCycle.add(new MyPair(mapCycleNumber[i], i));
 		}
 		Collections.sort(mapNumberCycle);
+		Iterator<MyPair> itMyPairs = mapNumberCycle.iterator();
 		
+		return 0;
 	}
 
 	public static void main(String[] args) throws Exception {
